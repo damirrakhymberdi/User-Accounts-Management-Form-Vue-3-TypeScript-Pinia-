@@ -1,4 +1,4 @@
-# chernovik
+
 
 Vue 3 + TypeScript + Pinia + Element Plus.
 
