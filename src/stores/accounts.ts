@@ -20,10 +20,10 @@ export const useAccountsStore = defineStore('accounts', {
       return record
     },
     remove(id: string) {
-      this.accounts = this.accounts.filter((a) => a.id !== id)
+      this.accounts = this.accounts.filter((a: AccountRecord) => a.id !== id)
     },
     upsertFromInput(id: string | null, input: AccountFormInput) {
-      const existingIndex = id ? this.accounts.findIndex((a) => a.id === id) : -1
+      const existingIndex = id ? this.accounts.findIndex((a: AccountRecord) => a.id === id) : -1
       const passwordValue = input.type === 'LDAP' ? null : input.password
       const base: AccountRecord = {
         id: id ?? crypto.randomUUID(),
