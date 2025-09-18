@@ -53,13 +53,13 @@ const hint = computed(
 
 <template>
   <div class="accounts">
-    <el-card shadow="never" class="card">
+    <el-card shadow="never" class="card container">
       <div class="header">
         <div class="title">
           <h2>Учетные записи</h2>
           <span class="hint">{{ hint }}</span>
         </div>
-        <el-button type="primary" @click="addRow" :icon="Plus">Добавить</el-button>
+        <el-button type="primary" @click="addRow" :icon="Plus" size="small">Добавить</el-button>
       </div>
 
       <el-divider />
@@ -75,71 +75,76 @@ const hint = computed(
 
         <div v-for="row in rows" :key="row.id" class="item">
           <div class="col col-label">
-            <el-form-item :error="row.errors.labelRaw">
+            <el-form-item :error="row.errors.labelRaw" label-width="0">
               <el-input
                 v-model="row.model.labelRaw"
                 placeholder="Метки через ;"
                 :maxlength="50"
                 @blur="onBlurOrChange(row)"
+                size="small"
+                clearable
               />
+              <div class="help">Например: dev; staging; prod</div>
             </el-form-item>
           </div>
           <div class="col col-type">
-            <el-form-item :error="row.errors.type">
+            <el-form-item :error="row.errors.type" label-width="0">
               <el-select
                 v-model="row.model.type"
                 placeholder="Выберите тип"
                 @change="() => onBlurOrChange(row)"
+                size="small"
+                clearable
               >
                 <el-option v-for="t in accountTypes" :key="t" :label="t" :value="t" />
               </el-select>
             </el-form-item>
           </div>
           <div class="col col-login">
-            <el-form-item :error="row.errors.login">
+            <el-form-item :error="row.errors.login" label-width="0">
               <el-input
                 v-model="row.model.login"
                 placeholder="Логин"
                 :maxlength="100"
                 @blur="onBlurOrChange(row)"
+                size="small"
+                clearable
               />
             </el-form-item>
           </div>
           <div class="col col-password">
             <template v-if="row.model.type === 'Локальная'">
-              <el-form-item :error="row.errors.password">
+              <el-form-item :error="row.errors.password" label-width="0">
                 <el-input
                   v-model="row.model.password"
                   placeholder="Пароль"
                   show-password
                   :maxlength="100"
                   @blur="onBlurOrChange(row)"
+                  size="small"
                 />
               </el-form-item>
             </template>
             <template v-else>
-              <span class="muted">Скрыто для LDAP</span>
+              <el-tag size="small" type="info" effect="light">Пароль скрыт (LDAP)</el-tag>
             </template>
           </div>
           <div class="col col-actions actions">
-            <el-button type="danger" plain :icon="Delete" @click="removeRow(row.id)">
-              Удалить
-            </el-button>
+            <el-tooltip content="Удалить" placement="top">
+              <el-button type="danger" plain :icon="Delete" size="small" @click="removeRow(row.id)" />
+            </el-tooltip>
           </div>
         </div>
       </div>
 
-      <el-alert
+      <el-empty
         v-if="!rows.length"
-        title="Нет добавленных записей"
-        type="info"
-        :closable="false"
-        show-icon
+        description="Нет добавленных записей"
         class="mt-12"
       />
     </el-card>
 
-    <el-card v-if="store.accounts.length" shadow="never" class="card saved">
+    <el-card v-if="store.accounts.length" shadow="never" class="card saved container">
       <template #header>
         <div class="card-header">
           <span>Сохраненные записи</span>
@@ -153,19 +158,28 @@ const hint = computed(
 
 <style scoped>
 .accounts { display: flex; flex-direction: column; gap: 16px; padding: 16px; }
+.container { max-width: 1100px; margin: 0 auto; }
 .card { border-radius: 10px; }
 .header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .title { display: flex; flex-direction: column; gap: 4px; }
 .title h2 { margin: 0; font-weight: 700; }
 .hint { color: #606266; font-size: 12px; }
-.list { display: flex; flex-direction: column; gap: 12px; }
+.list { display: flex; flex-direction: column; gap: 8px; }
 .labels, .item { display: grid; grid-template-columns: 2fr 1.2fr 1.6fr 1.6fr 0.9fr; gap: 12px; align-items: start; }
 .labels { font-weight: 600; color: #606266; }
 .col { width: 100%; }
 .actions { display: flex; align-items: center; }
 .muted { color: #909399; font-size: 13px; }
+.help { color: #909399; font-size: 12px; margin-top: 4px; }
+.item { padding: 6px 8px; border-radius: 8px; transition: background-color .15s ease; }
+.item:hover { background: #fafafa; }
 .saved pre { background: #f6f8fa; padding: 12px; border-radius: 8px; overflow: auto; }
 .mt-12 { margin-top: 12px; }
+
+@media (max-width: 860px) {
+  .labels { display: none; }
+  .item { grid-template-columns: 1fr; gap: 6px; }
+}
 </style>
 
 
