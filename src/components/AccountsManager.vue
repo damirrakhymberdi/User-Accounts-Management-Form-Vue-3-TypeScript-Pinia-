@@ -3,39 +3,21 @@ import { ref, computed, onMounted } from 'vue'
 import { useAccountsStore } from '@/stores/accounts'
 import type { AccountFormInput, AccountType } from '@/types'
 import { validateAccount } from '@/types'
-import { Plus, Delete, Moon, Sunny } from '@element-plus/icons-vue'
+import { Plus, Delete } from '@element-plus/icons-vue'
 
 const store = useAccountsStore()
 
-// Dark mode state
-const isDarkMode = ref(false)
-
-// Toggle dark mode
-function toggleDarkMode() {
-  isDarkMode.value = !isDarkMode.value
-  localStorage.setItem('darkMode', isDarkMode.value.toString())
-  updateTheme()
-}
+// Always dark mode
+const isDarkMode = ref(true)
 
 // Update theme
 function updateTheme() {
   const html = document.documentElement
-  if (isDarkMode.value) {
-    html.classList.add('dark')
-  } else {
-    html.classList.remove('dark')
-  }
+  html.classList.add('dark')
 }
 
-// Load saved theme on mount
+// Load theme on mount
 onMounted(() => {
-  const saved = localStorage.getItem('darkMode')
-  if (saved !== null) {
-    isDarkMode.value = saved === 'true'
-  } else {
-    // Check system preference
-    isDarkMode.value = window.matchMedia('(prefers-color-scheme: dark)').matches
-  }
   updateTheme()
 })
 
@@ -101,19 +83,7 @@ const hint = computed(
 </script>
 
 <template>
-  <div class="accounts" :class="{ 'dark-mode': isDarkMode }">
-    <!-- Theme Toggle Button -->
-    <div class="theme-toggle">
-      <el-button 
-        @click="toggleDarkMode" 
-        :icon="isDarkMode ? Sunny : Moon" 
-        circle 
-        size="large"
-        class="theme-btn"
-        :title="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
-      />
-    </div>
-
+  <div class="accounts dark-mode">
     <el-card shadow="never" class="card container main-card">
       <div class="header">
         <div class="title">
@@ -248,8 +218,8 @@ const hint = computed(
   --text-primary: #1a202c;
   --text-secondary: #4a5568;
   --text-muted: #718096;
-  --border-color: #d1d5db;
-  --border-strong: #9ca3af;
+  --border-color: #000000;
+  --border-strong: #000000;
   --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -300,26 +270,6 @@ const hint = computed(
   z-index: -1;
 }
 
-/* Theme Toggle */
-.theme-toggle {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
-}
-
-.theme-btn {
-  background: var(--bg-card) !important;
-  border: 2px solid var(--border-strong) !important;
-  box-shadow: var(--shadow) !important;
-  color: var(--text-primary) !important;
-  transition: all 0.3s ease !important;
-}
-
-.theme-btn:hover {
-  transform: scale(1.1) rotate(180deg);
-  box-shadow: var(--shadow-lg) !important;
-}
 
 /* Container */
 .container {
@@ -405,11 +355,18 @@ const hint = computed(
   font-weight: 600 !important;
   box-shadow: var(--shadow) !important;
   transition: all 0.3s ease !important;
+  color: white !important;
 }
 
 .add-btn:hover {
   transform: translateY(-2px) scale(1.05);
   box-shadow: var(--shadow-lg) !important;
+  color: white !important;
+}
+
+.add-btn:active {
+  transform: translateY(0) scale(0.98);
+  color: white !important;
 }
 
 .add-btn:active {
@@ -610,11 +567,6 @@ const hint = computed(
   .accounts {
     padding: 16px;
     gap: 16px;
-  }
-  
-  .theme-toggle {
-    top: 16px;
-    right: 16px;
   }
   
   .gradient-title {
